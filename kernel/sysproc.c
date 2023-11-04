@@ -75,7 +75,36 @@ int
 sys_pgaccess(void)
 {
   // lab pgtbl: your code here.
-  return 0;
+  uint64 va_upage;  // starting virtual address of the first user page to check
+  int npages;            // number of pages to check
+  uint64 va_mask; // user address to a buffer to store the results
+  uint32 mask = 0;
+  pagetable_t pagetable = myproc()->pagetable;
+  pte_t *pte;
+
+  argaddr(0, &va_upage);
+  argint(1, &npages);
+  argaddr(2, &va_mask);
+
+  for(int i = 0; i < npages; i++){
+    uint64 a = va_upage + i * PGSIZE;
+    if((pte = walk(pagetable, a, 0)) == 0)
+      panic("uvmunmap: walk");
+    if((*pte & PTE_V) == 0)
+      panic("uvmunmap: not mapped");
+    if(PTE_FLAGS(*pte) == PTE_V)
+      panic("uvmunmap: not a leaf");
+
+    if(*pte & PTE_A){
+      mask |= (1 << i);
+      *pte &= ~PTE_A;
+    }
+  }
+
+  if(copyout(pagetable, va_mask, (char*)&mask, sizeof(mask)))
+    return -1;
+
+return 0;
 }
 #endif
 
