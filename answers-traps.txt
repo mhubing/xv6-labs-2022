@@ -1,0 +1,29 @@
+1. Which registers contain arguments to functions? For example, which register holds 13 in main's call to printf?
+main:
+    a2 holds 13
+    a1 holds 12(12 is f(8)+1)
+    a0 holds 
+
+2. Where is the call to function f in the assembly code for main? Where is the call to g? (Hint: the compiler may inline functions.)
+    没有跳转，编译器将 g 内联进 f，将 f 内联进 main。
+
+3. At what address is the function printf located?
+    0x000000000000064a
+
+4. What value is in the register ra just after the jalr to printf in main?
+    0x38 ra stores return address. 
+
+5. Output of the following code:(RISC-V is little-endian)
+    unsigned int i = 0x00646c72;
+	printf("H%x Wo%s", 57616, &i);
+
+    %x 输出十六进制，57616 is 0xe110
+    %s 输出以 &i 为首地址的字符串 0x72 is r, 0x6c is l, 0x64 is d.
+    output is He110 World
+
+    若为 big-endian，i=0x726c6400，57616不用修改。
+
+6. In the following code, what is going to be printed after 'y='? (note: the answer is not a specific value.) Why does this happen?
+	printf("x=%d y=%d", 3);
+
+    输出寄存器 a2 的值。
