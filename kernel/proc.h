@@ -107,4 +107,6 @@ struct proc {
   int alarm_interval;          // alarm interval
   uint64 alarm_handler;              // pointer to the handler function
   int ticks_count;             // keep track of how many ticks have passed
+  struct trapframe *trapframe_backup;
+  int is_alarming;             // 0 for no alarm, 1 for have a alarm
 };
